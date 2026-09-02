@@ -5,449 +5,292 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fur Real? Animal Myth or Fact</title>
   <style>
-    :root {
-      --bg1: #eaf8ff;
-      --bg2: #fdf6ff;
-      --card: rgba(255,255,255,0.88);
-      --text: #24415a;
-      --muted: #5f7b92;
-      --primary: #74c7ec;
-      --primary-dark: #4aa8d8;
-      --accent: #ffd166;
-      --success: #6dd3a0;
-      --danger: #ff9aa2;
-      --lav: #d9c2ff;
-      --mint: #c8f7dc;
-      --shadow: 0 12px 30px rgba(78, 122, 160, 0.15);
-      --radius: 24px;
+    :root{
+      --bg1:#dff6ff;
+      --bg2:#fdf4ff;
+      --card:rgba(255,255,255,.92);
+      --text:#23435b;
+      --muted:#5f7d93;
+      --primary:#74c7ec;
+      --primary-dark:#3fa7d6;
+      --accent:#ffd166;
+      --good:#75d7a7;
+      --bad:#ff9aa2;
+      --shadow:0 14px 34px rgba(64,120,160,.16);
+      --radius:24px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      min-height:100vh;
       background:
-        radial-gradient(circle at top left, #ffffff 0%, transparent 25%),
-        radial-gradient(circle at top right, #dff7ff 0%, transparent 30%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height: 100vh;
+        radial-gradient(circle at top left,#ffffff 0%,transparent 20%),
+        radial-gradient(circle at top right,#e7fbff 0%,transparent 25%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      overflow-x:hidden;
     }
 
-    .app {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 24px;
+    .app{max-width:1200px;margin:0 auto;padding:20px}
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px;
+    }
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand h1{margin:0;font-size:1.9rem}
+    .brand p{margin:4px 0 0;color:var(--muted)}
+    .floating-mascot{
+      width:82px;height:82px;border-radius:50%;display:grid;place-items:center;font-size:42px;
+      background:linear-gradient(180deg,#fff,#e9faff);box-shadow:var(--shadow);
+      animation:bob 2.4s ease-in-out infinite;
+    }
+    .floating-mascot.happy{animation:bob 1.8s ease-in-out infinite, wiggle .45s ease-in-out 2}
+    .floating-mascot.oops{animation:bob 2.4s ease-in-out infinite, shake .35s ease-in-out 2}
+
+    .stats{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{
+      background:var(--card);border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);font-weight:800;
     }
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
+    .screen{display:none}
+    .screen.active{display:block;animation:fade .25s ease}
+
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:24px;
+      border:1px solid rgba(255,255,255,.7);
+      backdrop-filter:blur(8px);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+    .hero h2{margin:0 0 8px;font-size:2rem}
+    .hero p{color:var(--muted);line-height:1.6}
+
+    .map-shell{
+      background:linear-gradient(180deg,#f9feff,#fdf7ff);
+      border:2px dashed #cfefff;
+      border-radius:28px;
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+      min-height:620px;
     }
 
-    .mascot {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-size: 38px;
-      background: linear-gradient(180deg, #ffffff, #dff6ff);
-      box-shadow: var(--shadow);
-      border: 4px solid rgba(255,255,255,0.8);
+    .map-top{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;
     }
 
-    .brand h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      line-height: 1.1;
+    .map-stage{
+      position:relative;
+      height:500px;
+      border-radius:24px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255,255,255,.85), transparent 15%),
+        radial-gradient(circle at 85% 22%, rgba(255,255,255,.6), transparent 15%),
+        linear-gradient(180deg,#dff7ff,#f8f2ff);
     }
 
-    .brand p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
+    .map-stage svg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
     }
 
-    .stats {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    .island-node{
+      position:absolute;
+      width:138px;
+      height:138px;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      z-index:3;
+      transition:transform .2s ease;
+    }
+    .island-node:hover{transform:translateY(-4px) scale(1.03)}
+    .island-node.active .island-label{outline:4px solid var(--accent)}
+
+    .island-label{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:110px;
+      min-height:72px;
+      border-radius:22px;
+      background:rgba(255,255,255,.88);
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+      font-weight:900;
+      color:#17384c;
     }
 
-    .pill {
-      background: var(--card);
-      border-radius: 999px;
-      padding: 10px 14px;
-      box-shadow: var(--shadow);
-      font-weight: 700;
-      color: var(--text);
+    .island-label .emoji{font-size:1.8rem;line-height:1}
+    .island-label .small{font-size:.78rem;font-weight:700;color:#31576f}
+
+    .map-mascot{
+      position:absolute;
+      font-size:68px;
+      left:50px;
+      top:330px;
+      transition:left .7s ease, top .7s ease;
+      animation:swim 4s ease-in-out infinite;
+      z-index:4;
+      pointer-events:none;
+      filter:drop-shadow(0 8px 10px rgba(0,0,0,.12));
     }
 
-    .screen {
-      display: none;
-      animation: fadeIn 0.25s ease;
+    .bubble{
+      position:absolute;
+      width:14px;height:14px;border-radius:50%;
+      background:rgba(255,255,255,.7);
+      bottom:-20px;
+      animation:rise 6s linear infinite;
+    }
+    .b1{left:10%;animation-delay:0s}
+    .b2{left:24%;animation-delay:1.3s;width:10px;height:10px}
+    .b3{left:58%;animation-delay:2.6s}
+    .b4{left:82%;animation-delay:3.5s;width:18px;height:18px}
+
+    .panel-row{
+      display:grid;
+      grid-template-columns:1fr 320px;
+      gap:18px;
+      align-items:start;
+      margin-top:18px;
     }
 
-    .screen.active {
-      display: block;
+    .difficulty-row,.cta-row{display:flex;gap:10px;flex-wrap:wrap}
+    .chip,.primary-btn,.secondary-btn,.answer-btn{
+      border:none;cursor:pointer;font:inherit;transition:.18s ease;
+    }
+    .chip{
+      padding:12px 16px;border-radius:999px;background:#fff;font-weight:800;box-shadow:0 8px 18px rgba(0,0,0,.06);
+    }
+    .chip.active{background:var(--primary);color:#fff}
+    .primary-btn{
+      background:linear-gradient(180deg,var(--primary),var(--primary-dark));
+      color:#fff;padding:14px 22px;border-radius:16px;font-weight:800;
+      box-shadow:0 10px 20px rgba(63,167,214,.25);
+    }
+    .secondary-btn{
+      background:#fff;color:var(--text);padding:14px 22px;border-radius:16px;font-weight:800;
     }
 
-    .card {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
-      border: 1px solid rgba(255,255,255,0.65);
+    .xp-wrap{margin-top:18px}
+    .xp-label{
+      display:flex;justify-content:space-between;color:var(--muted);margin-bottom:8px;font-size:.95rem;
+    }
+    .xp-bar{
+      height:16px;background:#ebf7fb;border-radius:999px;overflow:hidden;
+    }
+    .xp-fill{
+      height:100%;width:0%;
+      background:linear-gradient(90deg,#ffd166,#ffb703);
+      transition:width .3s ease;border-radius:999px;
     }
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 20px;
-      align-items: stretch;
+    .world-card{min-height:220px}
+    .world-preview{
+      border-radius:24px;
+      min-height:180px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      text-align:center;
+      padding:18px;
+      border:2px dashed rgba(255,255,255,.7);
+    }
+    .world-preview .big{font-size:4rem}
+
+    .subtle{color:var(--muted)}
+
+    .quiz-header{
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;
+    }
+    .mini-guide{
+      display:flex;align-items:center;gap:10px;font-weight:800;color:var(--primary-dark);
+    }
+    .mini-guide-face{
+      width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;
+      font-size:30px;box-shadow:var(--shadow);animation:bob 2.4s ease-in-out infinite;
     }
 
-    .hero-copy h2 {
-      margin-top: 0;
-      font-size: 2rem;
+    .question-card{
+      border-radius:26px;background:linear-gradient(180deg,#fff,#f8fdff);border:2px solid #e5f7ff;padding:24px;
+    }
+    .question-meta{color:var(--muted);font-weight:800;margin-bottom:10px}
+    .statement{font-size:1.5rem;font-weight:900;line-height:1.4;margin-bottom:18px}
+    .answer-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .answer-btn{
+      padding:18px;border-radius:20px;font-size:1.1rem;font-weight:900;background:#fff;box-shadow:0 10px 22px rgba(0,0,0,.05);
+    }
+    .myth-btn{border:2px solid #ffd6dc}
+    .fact-btn{border:2px solid #ccefe0}
+    .correct{background:#ebfff2!important;border-color:var(--good)!important}
+    .wrong{background:#fff1f2!important;border-color:var(--bad)!important}
+
+    .feedback{
+      margin-top:16px;padding:16px;border-radius:18px;display:none;
+    }
+    .feedback.show{display:block}
+    .feedback.correct{background:#ecfff5;border:1px solid #c5efd8}
+    .feedback.wrong{background:#fff5f6;border:1px solid #ffd0d5}
+    .feedback h4{margin:0 0 8px}
+    .feedback p{margin:0;color:var(--muted);line-height:1.55}
+    .next-row{display:flex;justify-content:flex-end;margin-top:16px}
+
+    .results-grid,.collection-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:18px;
+    }
+    .result-box,.animal-box{
+      background:linear-gradient(180deg,#fff,#f8fcff);border-radius:20px;padding:18px;text-align:center;
+      box-shadow:0 8px 18px rgba(0,0,0,.05);
+    }
+    .animal-box.locked{opacity:.6}
+    .animal-box.equipped{outline:3px solid var(--accent)}
+    .animal-emoji,.big{font-size:2rem;font-weight:900}
+    .animal-box button{
+      margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--primary);color:#fff;font-weight:800;
     }
 
-    .hero-copy p {
-      color: var(--muted);
-      line-height: 1.6;
+    .footer-note{text-align:center;color:var(--muted);margin-top:18px;font-size:.9rem}
+
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+    @keyframes swim{
+      0%,100%{transform:translateX(0) rotate(0)}
+      25%{transform:translateX(-8px) rotate(-4deg)}
+      50%{transform:translateX(6px) rotate(3deg)}
+      75%{transform:translateX(-4px) rotate(-2deg)}
+    }
+    @keyframes rise{
+      0%{transform:translateY(0) scale(.8);opacity:0}
+      15%{opacity:.8}
+      100%{transform:translateY(-520px) scale(1.2);opacity:0}
     }
 
-    .seal-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 260px;
-      background: linear-gradient(180deg, #e9fbff, #f7f1ff);
-      border-radius: 24px;
-      border: 2px dashed #cdefff;
-      text-align: center;
-      padding: 20px;
+    @media (max-width:900px){
+      .panel-row{grid-template-columns:1fr}
     }
-
-    .seal-big {
-      font-size: 90px;
-      margin-bottom: 10px;
-    }
-
-    .seal-msg {
-      font-weight: 700;
-      color: var(--primary-dark);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 20px;
-    }
-
-    .option-group h3,
-    .collection h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-    }
-
-    .choices {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    button {
-      border: none;
-      cursor: pointer;
-      font: inherit;
-      transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-    }
-
-    button:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .chip {
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: #fff;
-      color: var(--text);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-      font-weight: 700;
-    }
-
-    .chip.active {
-      background: var(--primary);
-      color: white;
-    }
-
-    .primary-btn {
-      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
-      color: white;
-      padding: 14px 22px;
-      border-radius: 16px;
-      font-weight: 800;
-      box-shadow: 0 10px 20px rgba(74, 168, 216, 0.25);
-    }
-
-    .secondary-btn {
-      background: white;
-      color: var(--text);
-      padding: 14px 22px;
-      border-radius: 16px;
-      font-weight: 800;
-    }
-
-    .cta-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 22px;
-      flex-wrap: wrap;
-    }
-
-    .xp-wrap {
-      margin-top: 18px;
-    }
-
-    .xp-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.95rem;
-      margin-bottom: 8px;
-      color: var(--muted);
-    }
-
-    .xp-bar {
-      width: 100%;
-      height: 16px;
-      background: #edf7fb;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .xp-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), #ffb703);
-      border-radius: 999px;
-      transition: width 0.3s ease;
-    }
-
-    .quiz-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .mini-mascot {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      color: var(--primary-dark);
-    }
-
-    .mini-face {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: white;
-      box-shadow: var(--shadow);
-      font-size: 28px;
-    }
-
-    .question-card {
-      background: linear-gradient(180deg, #ffffff, #f8fdff);
-      border: 2px solid #e7f7ff;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 18px;
-    }
-
-    .question-meta {
-      color: var(--muted);
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .statement {
-      font-size: 1.5rem;
-      line-height: 1.4;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .answer-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .answer-btn {
-      padding: 18px;
-      border-radius: 20px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      background: white;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.05);
-    }
-
-    .myth-btn {
-      border: 2px solid #ffd6dc;
-    }
-
-    .fact-btn {
-      border: 2px solid #ccefe0;
-    }
-
-    .answer-btn.correct {
-      background: #eafff2;
-      border-color: var(--success);
-    }
-
-    .answer-btn.wrong {
-      background: #fff1f2;
-      border-color: var(--danger);
-    }
-
-    .feedback {
-      margin-top: 16px;
-      padding: 16px;
-      border-radius: 18px;
-      display: none;
-    }
-
-    .feedback.show {
-      display: block;
-    }
-
-    .feedback.correct {
-      background: #ecfff5;
-      border: 1px solid #c5efd8;
-    }
-
-    .feedback.wrong {
-      background: #fff5f6;
-      border: 1px solid #ffd0d5;
-    }
-
-    .feedback h4 {
-      margin: 0 0 8px;
-    }
-
-    .feedback p {
-      margin: 0;
-      line-height: 1.55;
-      color: var(--muted);
-    }
-
-    .next-row {
-      margin-top: 16px;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .results-grid,
-    .collection-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .result-box,
-    .animal-box {
-      background: linear-gradient(180deg, #ffffff, #f8fcff);
-      border-radius: 20px;
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.05);
-    }
-
-    .result-box .big,
-    .animal-emoji {
-      font-size: 2rem;
-      font-weight: 900;
-    }
-
-    .animal-box.locked {
-      opacity: 0.6;
-      filter: grayscale(0.3);
-    }
-
-    .animal-box.equipped {
-      outline: 3px solid var(--accent);
-    }
-
-    .animal-box button {
-      margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: var(--primary);
-      color: white;
-      font-weight: 700;
-    }
-
-    .subtle {
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .footer-note {
-      text-align: center;
-      color: var(--muted);
-      margin-top: 18px;
-      font-size: 0.9rem;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 760px) {
-      .hero,
-      .grid-2,
-      .answer-row {
-        grid-template-columns: 1fr;
-      }
-
-      .statement {
-        font-size: 1.2rem;
-      }
-
-      .brand h1 {
-        font-size: 1.45rem;
-      }
+    @media (max-width:780px){
+      .answer-grid{grid-template-columns:1fr}
+      .statement{font-size:1.2rem}
+      .brand h1{font-size:1.5rem}
+      .map-stage{height:620px}
+      .island-node{width:120px;height:120px}
+      .island-label{width:100px}
     }
   </style>
 </head>
@@ -455,10 +298,10 @@
   <div class="app">
     <div class="topbar">
       <div class="brand">
-        <div class="mascot" id="topMascot">🦭</div>
+        <div class="floating-mascot" id="topMascot">🦭</div>
         <div>
           <h1>Fur Real?</h1>
-          <p>Cute animal myth-or-fact learning game</p>
+          <p>Animal myth-or-fact adventure</p>
         </div>
       </div>
       <div class="stats">
@@ -468,60 +311,138 @@
       </div>
     </div>
 
-    <section id="homeScreen" class="screen active">
+    <section class="screen active" id="homeScreen">
       <div class="card hero">
-        <div class="hero-copy">
-          <h2>Welcome to your animal myth-or-fact adventure</h2>
-          <p>
-            Test surprising animal statements, build streaks, earn XP, and unlock adorable mascot friends.
-            Pick a category, choose your difficulty, and let your seal guide you through one fun fact at a time.
-          </p>
+        <h2>Choose your island path</h2>
+        <p>Pick a habitat island, choose your difficulty, and guide your mascot through a cute myth-or-fact adventure.</p>
 
-          <div class="grid-2">
-            <div class="card option-group">
-              <h3>Choose a category</h3>
-              <div class="choices" id="categoryChoices"></div>
-            </div>
-
-            <div class="card option-group">
-              <h3>Choose a difficulty</h3>
-              <div class="choices" id="difficultyChoices"></div>
-              <p class="subtle" style="margin-top:10px;">
-                Easy = less XP • Medium = normal XP • Expert = more XP
-              </p>
-            </div>
+        <div class="map-shell">
+          <div class="map-top">
+            <div class="pill">Selected: <span id="selectedWorldLabel">Mixed</span></div>
           </div>
 
-          <div class="xp-wrap">
-            <div class="xp-label">
-              <span>Unlock progress</span>
-              <span><span id="xpCurrentLabel">0</span> XP</span>
-            </div>
-            <div class="xp-bar">
-              <div class="xp-fill" id="xpFill"></div>
-            </div>
-          </div>
+          <div class="map-stage">
+            <svg viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M100 360 C220 300, 260 170, 420 190 S650 330, 780 220 S980 120, 1100 170"
+                fill="none" stroke="#bfe8f7" stroke-width="18" stroke-linecap="round" stroke-dasharray="12 16"/>
 
-          <div class="cta-row">
-            <button class="primary-btn" id="startBtn">Start Challenge</button>
-            <button class="secondary-btn" id="viewCollectionBtn">Animal Collection</button>
+              <ellipse cx="120" cy="360" rx="90" ry="58" fill="#eadcff"/>
+              <ellipse cx="120" cy="360" rx="68" ry="42" fill="#f6ecff"/>
+
+              <ellipse cx="320" cy="170" rx="95" ry="60" fill="#bdefff"/>
+              <ellipse cx="320" cy="170" rx="72" ry="44" fill="#def8ff"/>
+
+              <ellipse cx="540" cy="220" rx="95" ry="60" fill="#d9f4d0"/>
+              <ellipse cx="540" cy="220" rx="72" ry="44" fill="#efffe8"/>
+
+              <ellipse cx="790" cy="130" rx="100" ry="62" fill="#ffe3a8"/>
+              <ellipse cx="790" cy="130" rx="76" ry="46" fill="#fff4d2"/>
+
+              <ellipse cx="1080" cy="180" rx="94" ry="58" fill="#eefaff"/>
+              <ellipse cx="1080" cy="180" rx="72" ry="44" fill="#ffffff"/>
+
+              <circle cx="305" cy="145" r="10" fill="#74c7ec"/>
+              <circle cx="335" cy="188" r="8" fill="#74c7ec"/>
+
+              <rect x="515" y="175" width="12" height="28" rx="6" fill="#8bbf6a"/>
+              <circle cx="521" cy="168" r="18" fill="#9fd47f"/>
+              <rect x="550" y="190" width="12" height="26" rx="6" fill="#8bbf6a"/>
+              <circle cx="556" cy="183" r="16" fill="#9fd47f"/>
+
+              <rect x="780" y="95" width="8" height="36" rx="4" fill="#c69a53"/>
+              <ellipse cx="784" cy="87" rx="22" ry="12" fill="#e6bb6e"/>
+
+              <polygon points="1065,155 1080,120 1095,155" fill="#cfe9f7"/>
+              <polygon points="1040,172 1055,140 1070,172" fill="#dff4ff"/>
+            </svg>
+
+            <div class="bubble b1"></div>
+            <div class="bubble b2"></div>
+            <div class="bubble b3"></div>
+            <div class="bubble b4"></div>
+
+            <div class="map-mascot" id="mapMascot">🦭</div>
+
+            <button class="island-node active" data-category="Mixed" style="left:65px; top:295px;">
+              <div class="island-label">
+                <div class="emoji">🌈</div>
+                Mixed
+                <div class="small">All habitats</div>
+              </div>
+            </button>
+
+            <button class="island-node" data-category="Ocean" style="left:265px; top:105px;">
+              <div class="island-label">
+                <div class="emoji">🌊</div>
+                Ocean
+                <div class="small">Swim and splash</div>
+              </div>
+            </button>
+
+            <button class="island-node" data-category="Forest" style="left:485px; top:155px;">
+              <div class="island-label">
+                <div class="emoji">🌲</div>
+                Forest
+                <div class="small">Cozy woods</div>
+              </div>
+            </button>
+
+            <button class="island-node" data-category="Savannah" style="left:735px; top:65px;">
+              <div class="island-label">
+                <div class="emoji">🦒</div>
+                Savannah
+                <div class="small">Sunny plains</div>
+              </div>
+            </button>
+
+            <button class="island-node" data-category="Arctic" style="left:1020px; top:115px;">
+              <div class="island-label">
+                <div class="emoji">❄️</div>
+                Arctic
+                <div class="small">Icy facts</div>
+              </div>
+            </button>
           </div>
         </div>
 
-        <div class="seal-card">
-          <div class="seal-big" id="homeMascot">🦭</div>
-          <div class="seal-msg" id="homeMascotLabel">Your seal guide is ready!</div>
-          <p class="subtle">Unlock more mascots as you earn XP and equip your favorite animal friend.</p>
+        <div class="panel-row">
+          <div class="card">
+            <h3 style="margin-top:0;">Choose a difficulty</h3>
+            <div class="difficulty-row" id="difficultyChoices"></div>
+            <p class="subtle">Easy = less XP • Medium = normal XP • Expert = more XP</p>
+
+            <div class="xp-wrap">
+              <div class="xp-label">
+                <span>Unlock progress</span>
+                <span><span id="xpCurrentLabel">0</span> XP</span>
+              </div>
+              <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+            </div>
+
+            <div class="cta-row" style="margin-top:18px;">
+              <button class="primary-btn" id="startBtn">Start Challenge</button>
+              <button class="secondary-btn" id="collectionBtn">Animal Collection</button>
+            </div>
+          </div>
+
+          <div class="card world-card">
+            <h3 style="margin-top:0;">World preview</h3>
+            <div class="world-preview" id="worldPreview">
+              <div class="big" id="worldEmoji">🌈</div>
+              <h4 id="worldTitle">Mixed Animal World</h4>
+              <p class="subtle" id="worldText">A playful mix of habitats and surprising facts.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="quizScreen" class="screen">
+    <section class="screen" id="quizScreen">
       <div class="card">
         <div class="quiz-header">
-          <div class="mini-mascot">
-            <div class="mini-face" id="quizMascot">🦭</div>
-            <span id="quizMascotText">Let’s play!</span>
+          <div class="mini-guide">
+            <div class="mini-guide-face" id="quizMascot">🦭</div>
+            <span id="quizMascotText">What do you think?</span>
           </div>
           <div class="stats">
             <div class="pill">Question <span id="questionNumber">1</span>/<span id="questionTotal">10</span></div>
@@ -537,7 +458,7 @@
           </div>
           <div class="statement" id="statementText"></div>
 
-          <div class="answer-row">
+          <div class="answer-grid">
             <button class="answer-btn myth-btn" id="mythBtn">Myth</button>
             <button class="answer-btn fact-btn" id="factBtn">Fact</button>
           </div>
@@ -554,30 +475,30 @@
       </div>
     </section>
 
-    <section id="resultsScreen" class="screen">
+    <section class="screen" id="resultsScreen">
       <div class="card">
         <h2>Round complete 🎉</h2>
-        <p class="subtle">Nice work. Here’s how you did this round.</p>
+        <p class="subtle">You finished your animal world challenge.</p>
 
         <div class="results-grid">
           <div class="result-box">
             <div class="big">✅</div>
-            <div><strong id="finalScore">0</strong></div>
+            <strong id="finalScore">0</strong>
             <div class="subtle">Correct</div>
           </div>
           <div class="result-box">
             <div class="big">🔥</div>
-            <div><strong id="finalBestRoundStreak">0</strong></div>
+            <strong id="finalBestRoundStreak">0</strong>
             <div class="subtle">Best Round Streak</div>
           </div>
           <div class="result-box">
             <div class="big">⭐</div>
-            <div><strong id="finalXP">0</strong></div>
+            <strong id="finalXP">0</strong>
             <div class="subtle">XP Earned</div>
           </div>
           <div class="result-box">
-            <div class="big">📚</div>
-            <div><strong id="finalCategory">Mixed</strong></div>
+            <div class="big">🗺️</div>
+            <strong id="finalCategory">Mixed</strong>
             <div class="subtle">Category</div>
           </div>
         </div>
@@ -587,24 +508,22 @@
             <span>Total XP</span>
             <span><span id="resultsXPLabel">0</span> XP</span>
           </div>
-          <div class="xp-bar">
-            <div class="xp-fill" id="resultsXPFill"></div>
-          </div>
+          <div class="xp-bar"><div class="xp-fill" id="resultsXPFill"></div></div>
         </div>
 
-        <div class="cta-row">
+        <div class="cta-row" style="margin-top:18px;">
           <button class="primary-btn" id="playAgainBtn">Play Again</button>
           <button class="secondary-btn" id="resultsCollectionBtn">Animal Collection</button>
         </div>
       </div>
     </section>
 
-    <section id="collectionScreen" class="screen">
-      <div class="card collection">
+    <section class="screen" id="collectionScreen">
+      <div class="card">
         <h2>Your Animal Collection</h2>
-        <p class="subtle">Earn more XP to unlock more mascot friends. Equip one to replace your seal guide.</p>
+        <p class="subtle">Equip unlocked animals as your guide.</p>
         <div class="collection-grid" id="collectionGrid"></div>
-        <div class="cta-row">
+        <div class="cta-row" style="margin-top:18px;">
           <button class="secondary-btn" id="backHomeBtn">Back Home</button>
         </div>
       </div>
@@ -615,77 +534,70 @@
 
   <script>
     const questionBank = [
-      { category: "Mixed", difficulty: "easy", statement: "Bats are blind.", answer: "myth", explanation: "Myth. Bats can see, and many species also use echolocation to help them navigate." },
-      { category: "Mixed", difficulty: "easy", statement: "Octopuses have three hearts.", answer: "fact", explanation: "Fact. Two hearts move blood to the gills, and one pumps it to the rest of the body." },
-      { category: "Mixed", difficulty: "easy", statement: "Goldfish only remember things for a few seconds.", answer: "myth", explanation: "Myth. Goldfish can remember information for much longer than a few seconds." },
-      { category: "Mixed", difficulty: "medium", statement: "A group of flamingos is called a flamboyance.", answer: "fact", explanation: "Fact. That is one of the real collective nouns used for flamingos." },
-      { category: "Mixed", difficulty: "medium", statement: "Sharks are mammals because they give live birth.", answer: "myth", explanation: "Myth. Sharks are fish, even though some species give live birth." },
-      { category: "Mixed", difficulty: "medium", statement: "Koalas sleep for much of the day.", answer: "fact", explanation: "Fact. Koalas often sleep many hours a day to conserve energy." },
-      { category: "Mixed", difficulty: "expert", statement: "Sea otters hold hands while sleeping so they do not drift apart.", answer: "fact", explanation: "Fact. Sea otters may hold paws or wrap in kelp to stay close while resting." },
-      { category: "Mixed", difficulty: "expert", statement: "All penguins live in icy Antarctica.", answer: "myth", explanation: "Myth. Penguins live in a range of Southern Hemisphere environments, and not all are in Antarctica." },
-      { category: "Ocean", difficulty: "easy", statement: "Dolphins are fish.", answer: "myth", explanation: "Myth. Dolphins are mammals. They breathe air and nurse their young." },
-      { category: "Ocean", difficulty: "easy", statement: "Seahorses can swim upright.", answer: "fact", explanation: "Fact. Seahorses swim vertically, which makes them especially distinctive." },
-      { category: "Ocean", difficulty: "medium", statement: "Jellyfish do not have a brain.", answer: "fact", explanation: "Fact. Jellyfish do not have a central brain, though they do have a simple nerve net." },
-      { category: "Ocean", difficulty: "expert", statement: "Narwhal tusks are actually elongated teeth.", answer: "fact", explanation: "Fact. A narwhal’s tusk is a long tooth that grows outward." },
-      { category: "Forest", difficulty: "easy", statement: "Owls can turn their heads all the way around.", answer: "myth", explanation: "Myth. Owls can turn their heads very far, but not a full 360 degrees." },
-      { category: "Forest", difficulty: "easy", statement: "Beavers build dams.", answer: "fact", explanation: "Fact. Beavers are known for building dams and lodges in waterways." },
-      { category: "Forest", difficulty: "medium", statement: "Porcupines can shoot their quills.", answer: "myth", explanation: "Myth. Porcupines cannot shoot quills, but quills detach easily on contact." },
-      { category: "Forest", difficulty: "expert", statement: "Some frogs can freeze and later thaw out alive.", answer: "fact", explanation: "Fact. Some species, like wood frogs, can survive partial freezing." },
-      { category: "Savannah", difficulty: "easy", statement: "Cheetahs are the fastest land animals.", answer: "fact", explanation: "Fact. Cheetahs are famous for their incredible sprinting speed." },
-      { category: "Savannah", difficulty: "medium", statement: "Elephants are afraid of mice.", answer: "myth", explanation: "Myth. This is a popular story, but it is not a reliable biological rule." },
-      { category: "Savannah", difficulty: "expert", statement: "Giraffes have the same number of neck vertebrae as humans.", answer: "fact", explanation: "Fact. Like humans, giraffes usually have seven neck vertebrae, though theirs are much longer." },
-      { category: "Arctic", difficulty: "easy", statement: "Polar bears have black skin under their fur.", answer: "fact", explanation: "Fact. Their fur looks white, but their skin underneath is black." },
-      { category: "Arctic", difficulty: "medium", statement: "Penguins and polar bears naturally live together in the wild.", answer: "myth", explanation: "Myth. Polar bears live in the Arctic, while penguins live in the Southern Hemisphere." },
-      { category: "Arctic", difficulty: "expert", statement: "Arctic foxes change coat color with the seasons.", answer: "fact", explanation: "Fact. Many arctic foxes have seasonal coats that help with camouflage." }
+      { category: "Mixed", difficulty: "easy", statement: "Bats are blind.", answer: "myth", explanation: "Myth. Bats can see, and many species also use echolocation." },
+      { category: "Mixed", difficulty: "easy", statement: "Octopuses have three hearts.", answer: "fact", explanation: "Fact. Two hearts pump blood to the gills and one to the rest of the body." },
+      { category: "Mixed", difficulty: "medium", statement: "A group of flamingos is called a flamboyance.", answer: "fact", explanation: "Fact. That is a real collective noun for flamingos." },
+      { category: "Mixed", difficulty: "expert", statement: "All penguins live in Antarctica.", answer: "myth", explanation: "Myth. Penguins live across the Southern Hemisphere, not only Antarctica." },
+
+      { category: "Ocean", difficulty: "easy", statement: "Dolphins are fish.", answer: "myth", explanation: "Myth. Dolphins are mammals." },
+      { category: "Ocean", difficulty: "easy", statement: "Seahorses swim upright.", answer: "fact", explanation: "Fact. Seahorses are known for swimming vertically." },
+      { category: "Ocean", difficulty: "medium", statement: "Jellyfish do not have a brain.", answer: "fact", explanation: "Fact. They have a nerve net, not a central brain." },
+      { category: "Ocean", difficulty: "expert", statement: "Narwhal tusks are elongated teeth.", answer: "fact", explanation: "Fact. A narwhal’s tusk is actually a long tooth." },
+
+      { category: "Forest", difficulty: "easy", statement: "Beavers build dams.", answer: "fact", explanation: "Fact. Beavers are famous for building dams and lodges." },
+      { category: "Forest", difficulty: "easy", statement: "Owls can turn their heads all the way around.", answer: "myth", explanation: "Myth. They can turn very far, but not 360 degrees." },
+      { category: "Forest", difficulty: "medium", statement: "Porcupines can shoot their quills.", answer: "myth", explanation: "Myth. Their quills detach easily, but they do not shoot them." },
+      { category: "Forest", difficulty: "expert", statement: "Some frogs can freeze and thaw out alive.", answer: "fact", explanation: "Fact. Some wood frogs can survive partial freezing." },
+
+      { category: "Savannah", difficulty: "easy", statement: "Cheetahs are the fastest land animals.", answer: "fact", explanation: "Fact. Cheetahs are famous for their speed." },
+      { category: "Savannah", difficulty: "medium", statement: "Elephants are naturally terrified of mice.", answer: "myth", explanation: "Myth. That idea is more folklore than fact." },
+      { category: "Savannah", difficulty: "expert", statement: "Giraffes have the same number of neck vertebrae as humans.", answer: "fact", explanation: "Fact. They usually have seven, just like humans." },
+
+      { category: "Arctic", difficulty: "easy", statement: "Polar bears have black skin under their fur.", answer: "fact", explanation: "Fact. Their skin is black beneath their fur." },
+      { category: "Arctic", difficulty: "medium", statement: "Polar bears and penguins live together in the wild.", answer: "myth", explanation: "Myth. Polar bears live in the Arctic, penguins in the Southern Hemisphere." },
+      { category: "Arctic", difficulty: "expert", statement: "Arctic foxes can change coat color with the seasons.", answer: "fact", explanation: "Fact. Their coats often shift for camouflage." }
     ];
 
-    const encouragementCorrect = [
-      "Seal-iously impressive!",
-      "Nice one!",
-      "You nailed it!",
-      "That was a smart catch!",
-      "You’re on a roll!",
-      "Wildly correct!",
-      "Fur-tastic job!"
-    ];
-
-    const encouragementWrong = [
-      "Good try — now you know!",
-      "No worries, that’s how learning works.",
-      "Nice attempt. Let’s keep going!",
-      "That one tricks lots of people.",
-      "You’re still building momentum!",
-      "Close call — onward!"
-    ];
-
-    const streakMessages = {
-      3: "3 in a row! Your seal is cheering for you! 🦭",
-      5: "5 in a row! You’re swimming through these! 🌊",
-      10: "10 in a row! Legendary animal fact energy! ✨"
+    const worldData = {
+      Mixed:   { emoji:"🌈", title:"Mixed Animal World", text:"A playful mix of habitats and surprising facts.", preview:"linear-gradient(180deg,#f1e4ff,#fff6ff)", x:70, y:320 },
+      Ocean:   { emoji:"🌊", title:"Ocean World", text:"Swim through sea myths and splashy surprises.", preview:"linear-gradient(180deg,#c8f1ff,#e8fbff)", x:270, y:130 },
+      Forest:  { emoji:"🌲", title:"Forest World", text:"Wander through cozy woods full of curious creatures.", preview:"linear-gradient(180deg,#dff7d9,#f2fff0)", x:495, y:180 },
+      Savannah:{ emoji:"🦒", title:"Savannah World", text:"Explore sunny grasslands and speedy animal facts.", preview:"linear-gradient(180deg,#ffe9b8,#fff7df)", x:745, y:90 },
+      Arctic:  { emoji:"❄️", title:"Arctic World", text:"Visit icy habitats and chilly myth-busting rounds.", preview:"linear-gradient(180deg,#eefaff,#ffffff)", x:1015, y:135 }
     };
 
     const animals = [
       { name: "Seal", emoji: "🦭", unlockXP: 0, blurb: "Your default ocean guide." },
       { name: "Penguin", emoji: "🐧", unlockXP: 40, blurb: "A cool little waddler." },
       { name: "Fox", emoji: "🦊", unlockXP: 80, blurb: "Quick, clever, and cozy." },
-      { name: "Otter", emoji: "🦦", unlockXP: 130, blurb: "Playful and full of charm." },
-      { name: "Koala", emoji: "🐨", unlockXP: 190, blurb: "Soft, sleepy, and sweet." },
-      { name: "Tiger", emoji: "🐯", unlockXP: 260, blurb: "Bold stripes, big energy." },
-      { name: "Whale", emoji: "🐋", unlockXP: 340, blurb: "A gentle ocean giant." }
+      { name: "Otter", emoji: "🦦", unlockXP: 130, blurb: "Playful and splashy." },
+      { name: "Koala", emoji: "🐨", unlockXP: 190, blurb: "Soft and sleepy." },
+      { name: "Tiger", emoji: "🐯", unlockXP: 260, blurb: "Bold and bright." },
+      { name: "Whale", emoji: "🐋", unlockXP: 340, blurb: "A giant gentle guide." }
     ];
 
-    const difficultyXP = {
-      easy: 8,
-      medium: 12,
-      expert: 18
+    const encouragementCorrect = [
+      "Seal-iously amazing!",
+      "You got it!",
+      "Fur-tastic!",
+      "That was a smart catch!",
+      "Wildly correct!"
+    ];
+
+    const encouragementWrong = [
+      "Good try — now you know!",
+      "That one fools lots of people.",
+      "No worries, keep swimming!",
+      "Nice attempt. Let’s keep going!"
+    ];
+
+    const streakMessages = {
+      3: "3 in a row! Tiny splash combo! 💦",
+      5: "5 in a row! Your guide is doing a happy wiggle! ✨",
+      10: "10 in a row! Legendary animal streak! 🌟"
     };
 
-    const screens = {
-      home: document.getElementById("homeScreen"),
-      quiz: document.getElementById("quizScreen"),
-      results: document.getElementById("resultsScreen"),
-      collection: document.getElementById("collectionScreen")
-    };
+    const difficultyXP = { easy: 8, medium: 12, expert: 18 };
 
     const state = {
       selectedCategory: "Mixed",
@@ -704,10 +616,14 @@
       completedCategories: JSON.parse(localStorage.getItem("animalQuiz_completedCategories") || "[]")
     };
 
-    const categoryOptions = ["Mixed", "Ocean", "Forest", "Savannah", "Arctic"];
-    const difficultyOptions = ["easy", "medium", "expert"];
+    const screens = {
+      home: document.getElementById("homeScreen"),
+      quiz: document.getElementById("quizScreen"),
+      results: document.getElementById("resultsScreen"),
+      collection: document.getElementById("collectionScreen")
+    };
 
-    function saveProgress() {
+    function saveProgress(){
       localStorage.setItem("animalQuiz_totalXP", state.totalXP);
       localStorage.setItem("animalQuiz_bestStreak", state.bestStreak);
       localStorage.setItem("animalQuiz_roundsCompleted", state.roundsCompleted);
@@ -715,73 +631,75 @@
       localStorage.setItem("animalQuiz_completedCategories", JSON.stringify(state.completedCategories));
     }
 
-    function showScreen(name) {
-      Object.values(screens).forEach(s => s.classList.remove("active"));
+    function showScreen(name){
+      Object.values(screens).forEach(s=>s.classList.remove("active"));
       screens[name].classList.add("active");
     }
 
-    function getEquippedAnimal() {
-      return animals.find(a => a.name === state.equippedAnimal) || animals[0];
+    function getEquippedAnimal(){
+      return animals.find(a=>a.name===state.equippedAnimal) || animals[0];
     }
 
-    function updateMascots() {
-      const equipped = getEquippedAnimal();
-      document.getElementById("topMascot").textContent = equipped.emoji;
-      document.getElementById("homeMascot").textContent = equipped.emoji;
-      document.getElementById("quizMascot").textContent = equipped.emoji;
-      document.getElementById("homeMascotLabel").textContent = `${equipped.name} is ready to play!`;
+    function updateMascots(){
+      const a = getEquippedAnimal();
+      document.getElementById("topMascot").textContent = a.emoji;
+      document.getElementById("mapMascot").textContent = a.emoji;
+      document.getElementById("quizMascot").textContent = a.emoji;
     }
 
-    function nextUnlockXP(currentXP) {
-      const locked = animals.filter(a => a.unlockXP > currentXP).sort((a,b) => a.unlockXP - b.unlockXP);
+    function moveMascotToCategory(category){
+      const mascot = document.getElementById("mapMascot");
+      const world = worldData[category];
+      mascot.style.left = world.x + "px";
+      mascot.style.top = world.y + "px";
+    }
+
+    function updateWorldPreview(){
+      const world = worldData[state.selectedCategory];
+      document.getElementById("selectedWorldLabel").textContent = state.selectedCategory;
+      document.getElementById("worldEmoji").textContent = world.emoji;
+      document.getElementById("worldTitle").textContent = world.title;
+      document.getElementById("worldText").textContent = world.text;
+      document.getElementById("worldPreview").style.background = world.preview;
+
+      document.querySelectorAll(".island-node").forEach(node=>{
+        node.classList.toggle("active", node.dataset.category === state.selectedCategory);
+      });
+
+      moveMascotToCategory(state.selectedCategory);
+    }
+
+    function nextUnlockXP(currentXP){
+      const locked = animals.filter(a=>a.unlockXP > currentXP).sort((a,b)=>a.unlockXP-b.unlockXP);
       return locked[0] || null;
     }
 
-    function updateTopStats() {
+    function updateXPBars(){
       document.getElementById("totalXP").textContent = state.totalXP;
       document.getElementById("bestStreak").textContent = state.bestStreak;
       document.getElementById("roundsCompleted").textContent = state.roundsCompleted;
-
       document.getElementById("xpCurrentLabel").textContent = state.totalXP;
       document.getElementById("resultsXPLabel").textContent = state.totalXP;
 
-      const nextUnlock = nextUnlockXP(state.totalXP);
+      const next = nextUnlockXP(state.totalXP);
       let percent = 100;
-
-      if (nextUnlock) {
-        const prevUnlock = [...animals].filter(a => a.unlockXP <= state.totalXP).sort((a,b) => b.unlockXP - a.unlockXP)[0]?.unlockXP || 0;
-        const range = nextUnlock.unlockXP - prevUnlock;
-        const progress = state.totalXP - prevUnlock;
-        percent = Math.max(0, Math.min(100, (progress / range) * 100));
+      if(next){
+        const prev = [...animals].filter(a=>a.unlockXP<=state.totalXP).sort((a,b)=>b.unlockXP-a.unlockXP)[0]?.unlockXP || 0;
+        percent = ((state.totalXP - prev) / (next.unlockXP - prev)) * 100;
       }
-
-      document.getElementById("xpFill").style.width = `${percent}%`;
-      document.getElementById("resultsXPFill").style.width = `${percent}%`;
+      percent = Math.max(0, Math.min(100, percent));
+      document.getElementById("xpFill").style.width = percent + "%";
+      document.getElementById("resultsXPFill").style.width = percent + "%";
     }
 
-    function renderCategoryChoices() {
-      const wrap = document.getElementById("categoryChoices");
-      wrap.innerHTML = "";
-      categoryOptions.forEach(cat => {
-        const btn = document.createElement("button");
-        btn.className = "chip" + (state.selectedCategory === cat ? " active" : "");
-        btn.textContent = cat;
-        btn.onclick = () => {
-          state.selectedCategory = cat;
-          renderCategoryChoices();
-        };
-        wrap.appendChild(btn);
-      });
-    }
-
-    function renderDifficultyChoices() {
+    function renderDifficultyChoices(){
       const wrap = document.getElementById("difficultyChoices");
       wrap.innerHTML = "";
-      difficultyOptions.forEach(level => {
+      ["easy","medium","expert"].forEach(level=>{
         const btn = document.createElement("button");
-        btn.className = "chip" + (state.selectedDifficulty === level ? " active" : "");
+        btn.className = "chip" + (state.selectedDifficulty===level ? " active" : "");
         btn.textContent = level.charAt(0).toUpperCase() + level.slice(1);
-        btn.onclick = () => {
+        btn.onclick = ()=>{
           state.selectedDifficulty = level;
           renderDifficultyChoices();
         };
@@ -789,26 +707,22 @@
       });
     }
 
-    function shuffle(arr) {
-      return [...arr].sort(() => Math.random() - 0.5);
+    function shuffle(arr){
+      return [...arr].sort(()=>Math.random() - 0.5);
     }
 
-    function buildQuestionSet() {
-      let pool = questionBank.filter(q => {
-        const categoryMatch = state.selectedCategory === "Mixed" ? true : q.category === state.selectedCategory;
-        const difficultyMatch = q.difficulty === state.selectedDifficulty || state.selectedCategory === "Mixed";
-        return categoryMatch && difficultyMatch;
-      });
-
-      if (state.selectedCategory === "Mixed") {
-        pool = questionBank.filter(q => q.difficulty === state.selectedDifficulty || state.selectedDifficulty === "medium");
+    function buildQuestionSet(){
+      let pool;
+      if(state.selectedCategory === "Mixed"){
+        pool = questionBank.filter(q=>q.difficulty===state.selectedDifficulty || state.selectedDifficulty==="medium");
+      } else {
+        pool = questionBank.filter(q=>q.category===state.selectedCategory && q.difficulty===state.selectedDifficulty);
+        if(pool.length < 10){
+          pool = questionBank.filter(q=>q.category===state.selectedCategory);
+        }
       }
-
-      if (pool.length < 10) {
-        pool = questionBank.filter(q => state.selectedCategory === "Mixed" || q.category === state.selectedCategory);
-      }
-
-      state.questions = shuffle(pool).slice(0, 10);
+      if(pool.length < 10) pool = questionBank;
+      state.questions = shuffle(pool).slice(0,10);
       state.currentIndex = 0;
       state.score = 0;
       state.streak = 0;
@@ -817,19 +731,19 @@
       state.answered = false;
     }
 
-    function currentQuestion() {
+    function currentQuestion(){
       return state.questions[state.currentIndex];
     }
 
-    function getXPForCorrect() {
+    function getXPForCorrect(){
       let xp = difficultyXP[state.selectedDifficulty];
-      if (state.streak >= 10) xp = Math.round(xp * 2);
-      else if (state.streak >= 5) xp = Math.round(xp * 1.5);
-      else if (state.streak >= 3) xp = Math.round(xp * 1.2);
+      if(state.streak >= 10) xp = Math.round(xp * 2);
+      else if(state.streak >= 5) xp = Math.round(xp * 1.5);
+      else if(state.streak >= 3) xp = Math.round(xp * 1.2);
       return xp;
     }
 
-    function renderQuestion() {
+    function renderQuestion(){
       const q = currentQuestion();
       document.getElementById("questionNumber").textContent = state.currentIndex + 1;
       document.getElementById("questionTotal").textContent = state.questions.length;
@@ -843,6 +757,7 @@
       document.getElementById("feedbackTitle").textContent = "";
       document.getElementById("feedbackText").textContent = "";
       document.getElementById("nextBtn").disabled = true;
+      document.getElementById("quizMascotText").textContent = "What do you think?";
 
       const mythBtn = document.getElementById("mythBtn");
       const factBtn = document.getElementById("factBtn");
@@ -850,21 +765,34 @@
       factBtn.disabled = false;
       mythBtn.className = "answer-btn myth-btn";
       factBtn.className = "answer-btn fact-btn";
-
       state.answered = false;
-      document.getElementById("quizMascotText").textContent = "What do you think?";
     }
 
-    function randomFrom(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+    function randomFrom(arr){
+      return arr[Math.floor(Math.random()*arr.length)];
     }
 
-    function answerQuestion(choice) {
-      if (state.answered) return;
+    function mascotReact(type){
+      const top = document.getElementById("topMascot");
+      const quiz = document.getElementById("quizMascot");
+      top.classList.remove("happy","oops");
+      quiz.classList.remove("happy","oops");
+      void top.offsetWidth;
+      void quiz.offsetWidth;
+      top.classList.add(type);
+      quiz.classList.add(type);
+      setTimeout(()=>{
+        top.classList.remove(type);
+        quiz.classList.remove(type);
+      },900);
+    }
+
+    function answerQuestion(choice){
+      if(state.answered) return;
       state.answered = true;
-
       const q = currentQuestion();
       const isCorrect = choice === q.answer;
+
       const mythBtn = document.getElementById("mythBtn");
       const factBtn = document.getElementById("factBtn");
       const feedback = document.getElementById("feedbackBox");
@@ -874,34 +802,33 @@
       mythBtn.disabled = true;
       factBtn.disabled = true;
 
-      if (q.answer === "myth") mythBtn.classList.add("correct");
+      if(q.answer === "myth") mythBtn.classList.add("correct");
       else factBtn.classList.add("correct");
 
-      if (!isCorrect) {
-        if (choice === "myth") mythBtn.classList.add("wrong");
-        if (choice === "fact") factBtn.classList.add("wrong");
+      if(!isCorrect){
+        if(choice === "myth") mythBtn.classList.add("wrong");
+        if(choice === "fact") factBtn.classList.add("wrong");
       }
 
-      if (isCorrect) {
-        state.score += 1;
-        state.streak += 1;
+      if(isCorrect){
+        state.score++;
+        state.streak++;
         state.bestRoundStreak = Math.max(state.bestRoundStreak, state.streak);
         state.bestStreak = Math.max(state.bestStreak, state.streak);
-
         const xpEarned = getXPForCorrect();
         state.roundXP += xpEarned;
-
-        feedback.classList.add("show", "correct");
+        feedback.classList.add("show","correct");
         title.textContent = `${randomFrom(encouragementCorrect)} +${xpEarned} XP`;
-        let streakText = streakMessages[state.streak] ? ` ${streakMessages[state.streak]}` : "";
-        text.textContent = `${q.explanation}${streakText}`;
+        text.textContent = q.explanation + (streakMessages[state.streak] ? " " + streakMessages[state.streak] : "");
         document.getElementById("quizMascotText").textContent = state.streak >= 3 ? "You’re building a great streak!" : "Nice work!";
+        mascotReact("happy");
       } else {
         state.streak = 0;
-        feedback.classList.add("show", "wrong");
+        feedback.classList.add("show","wrong");
         title.textContent = randomFrom(encouragementWrong);
         text.textContent = q.explanation;
-        document.getElementById("quizMascotText").textContent = "You’re still learning — keep going!";
+        document.getElementById("quizMascotText").textContent = "Keep going — you’re learning!";
+        mascotReact("oops");
       }
 
       document.getElementById("score").textContent = state.score;
@@ -909,17 +836,17 @@
       document.getElementById("roundXP").textContent = state.roundXP;
       document.getElementById("nextBtn").disabled = false;
       saveProgress();
-      updateTopStats();
+      updateXPBars();
     }
 
-    function finishRound() {
+    function finishRound(){
       state.totalXP += state.roundXP;
       state.roundsCompleted += 1;
-      if (!state.completedCategories.includes(state.selectedCategory)) {
+      if(!state.completedCategories.includes(state.selectedCategory)){
         state.completedCategories.push(state.selectedCategory);
       }
       saveProgress();
-      updateTopStats();
+      updateXPBars();
       updateMascots();
 
       document.getElementById("finalScore").textContent = `${state.score}/${state.questions.length}`;
@@ -930,91 +857,89 @@
       showScreen("results");
     }
 
-    function nextQuestion() {
-      if (state.currentIndex < state.questions.length - 1) {
-        state.currentIndex += 1;
+    function nextQuestion(){
+      if(state.currentIndex < state.questions.length - 1){
+        state.currentIndex++;
         renderQuestion();
       } else {
         finishRound();
       }
     }
 
-    function renderCollection() {
+    function renderCollection(){
       const grid = document.getElementById("collectionGrid");
       grid.innerHTML = "";
-
-      animals.forEach(animal => {
+      animals.forEach(animal=>{
         const unlocked = state.totalXP >= animal.unlockXP;
         const equipped = state.equippedAnimal === animal.name;
-
         const box = document.createElement("div");
         box.className = "animal-box" + (!unlocked ? " locked" : "") + (equipped ? " equipped" : "");
-
         box.innerHTML = `
           <div class="animal-emoji">${animal.emoji}</div>
           <h4>${animal.name}</h4>
           <p class="subtle">${animal.blurb}</p>
           <p class="subtle">${unlocked ? "Unlocked" : `Unlocks at ${animal.unlockXP} XP`}</p>
         `;
-
         const btn = document.createElement("button");
-        if (!unlocked) {
+        if(!unlocked){
           btn.textContent = "Locked";
           btn.disabled = true;
-        } else if (equipped) {
+        } else if(equipped){
           btn.textContent = "Equipped";
           btn.disabled = true;
         } else {
           btn.textContent = "Equip";
-          btn.onclick = () => {
+          btn.onclick = ()=>{
             state.equippedAnimal = animal.name;
             saveProgress();
             updateMascots();
             renderCollection();
           };
         }
-
         box.appendChild(btn);
         grid.appendChild(box);
       });
     }
 
-    document.getElementById("startBtn").addEventListener("click", () => {
+    document.querySelectorAll(".island-node").forEach(node=>{
+      node.addEventListener("click", ()=>{
+        state.selectedCategory = node.dataset.category;
+        updateWorldPreview();
+      });
+    });
+
+    document.getElementById("startBtn").addEventListener("click", ()=>{
       buildQuestionSet();
       renderQuestion();
       showScreen("quiz");
     });
 
-    document.getElementById("viewCollectionBtn").addEventListener("click", () => {
+    document.getElementById("collectionBtn").addEventListener("click", ()=>{
       renderCollection();
       showScreen("collection");
     });
 
-    document.getElementById("resultsCollectionBtn").addEventListener("click", () => {
+    document.getElementById("resultsCollectionBtn").addEventListener("click", ()=>{
       renderCollection();
       showScreen("collection");
     });
 
-    document.getElementById("backHomeBtn").addEventListener("click", () => {
-      updateTopStats();
-      updateMascots();
+    document.getElementById("backHomeBtn").addEventListener("click", ()=>{
       showScreen("home");
     });
 
-    document.getElementById("playAgainBtn").addEventListener("click", () => {
-      updateTopStats();
-      updateMascots();
+    document.getElementById("playAgainBtn").addEventListener("click", ()=>{
       showScreen("home");
     });
 
-    document.getElementById("mythBtn").addEventListener("click", () => answerQuestion("myth"));
-    document.getElementById("factBtn").addEventListener("click", () => answerQuestion("fact"));
+    document.getElementById("mythBtn").addEventListener("click", ()=>answerQuestion("myth"));
+    document.getElementById("factBtn").addEventListener("click", ()=>answerQuestion("fact"));
     document.getElementById("nextBtn").addEventListener("click", nextQuestion);
 
-    renderCategoryChoices();
     renderDifficultyChoices();
-    updateTopStats();
+    updateWorldPreview();
     updateMascots();
+    updateXPBars();
     renderCollection();
   </script>
 </body>
