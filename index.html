@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fur Real? Animal Myth or Fact</title>
+  <style>
+    :root {
+      --bg1: #eaf8ff;
+      --bg2: #fdf6ff;
+      --card: rgba(255,255,255,0.88);
+      --text: #24415a;
+      --muted: #5f7b92;
+      --primary: #74c7ec;
+      --primary-dark: #4aa8d8;
+      --accent: #ffd166;
+      --success: #6dd3a0;
+      --danger: #ff9aa2;
+      --lav: #d9c2ff;
+      --mint: #c8f7dc;
+      --shadow: 0 12px 30px rgba(78, 122, 160, 0.15);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #ffffff 0%, transparent 25%),
+        radial-gradient(circle at top right, #dff7ff 0%, transparent 30%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mascot {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 38px;
+      background: linear-gradient(180deg, #ffffff, #dff6ff);
+      box-shadow: var(--shadow);
+      border: 4px solid rgba(255,255,255,0.8);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      line-height: 1.1;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      background: var(--card);
+      border-radius: 999px;
+      padding: 10px 14px;
+      box-shadow: var(--shadow);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.65);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .hero-copy h2 {
+      margin-top: 0;
+      font-size: 2rem;
+    }
+
+    .hero-copy p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .seal-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 260px;
+      background: linear-gradient(180deg, #e9fbff, #f7f1ff);
+      border-radius: 24px;
+      border: 2px dashed #cdefff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .seal-big {
+      font-size: 90px;
+      margin-bottom: 10px;
+    }
+
+    .seal-msg {
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .option-group h3,
+    .collection h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font: inherit;
+      transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .chip {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      font-weight: 700;
+    }
+
+    .chip.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .primary-btn {
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 14px 22px;
+      border-radius: 16px;
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(74, 168, 216, 0.25);
+    }
+
+    .secondary-btn {
+      background: white;
+      color: var(--text);
+      padding: 14px 22px;
+      border-radius: 16px;
+      font-weight: 800;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .xp-wrap {
+      margin-top: 18px;
+    }
+
+    .xp-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+
+    .xp-bar {
+      width: 100%;
+      height: 16px;
+      background: #edf7fb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .xp-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #ffb703);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .mini-mascot {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .mini-face {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: white;
+      box-shadow: var(--shadow);
+      font-size: 28px;
+    }
+
+    .question-card {
+      background: linear-gradient(180deg, #ffffff, #f8fdff);
+      border: 2px solid #e7f7ff;
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .question-meta {
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .statement {
+      font-size: 1.5rem;
+      line-height: 1.4;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .answer-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .answer-btn {
+      padding: 18px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: white;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+    }
+
+    .myth-btn {
+      border: 2px solid #ffd6dc;
+    }
+
+    .fact-btn {
+      border: 2px solid #ccefe0;
+    }
+
+    .answer-btn.correct {
+      background: #eafff2;
+      border-color: var(--success);
+    }
+
+    .answer-btn.wrong {
+      background: #fff1f2;
+      border-color: var(--danger);
+    }
+
+    .feedback {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 18px;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.correct {
+      background: #ecfff5;
+      border: 1px solid #c5efd8;
+    }
+
+    .feedback.wrong {
+      background: #fff5f6;
+      border: 1px solid #ffd0d5;
+    }
+
+    .feedback h4 {
+      margin: 0 0 8px;
+    }
+
+    .feedback p {
+      margin: 0;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .next-row {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .results-grid,
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .result-box,
+    .animal-box {
+      background: linear-gradient(180deg, #ffffff, #f8fcff);
+      border-radius: 20px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+    }
+
+    .result-box .big,
+    .animal-emoji {
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .animal-box.locked {
+      opacity: 0.6;
+      filter: grayscale(0.3);
+    }
+
+    .animal-box.equipped {
+      outline: 3px solid var(--accent);
+    }
+
+    .animal-box button {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 18px;
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 760px) {
+      .hero,
+      .grid-2,
+      .answer-row {
+        grid-template-columns: 1fr;
+      }
+
+      .statement {
+        font-size: 1.2rem;
+      }
+
+      .brand h1 {
+        font-size: 1.45rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="mascot" id="topMascot">🦭</div>
+        <div>
+          <h1>Fur Real?</h1>
+          <p>Cute animal myth-or-fact learning game</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="pill">XP: <span id="totalXP">0</span></div>
+        <div class="pill">Best Streak: <span id="bestStreak">0</span></div>
+        <div class="pill">Rounds: <span id="roundsCompleted">0</span></div>
+      </div>
+    </div>
+
+    <section id="homeScreen" class="screen active">
+      <div class="card hero">
+        <div class="hero-copy">
+          <h2>Welcome to your animal myth-or-fact adventure</h2>
+          <p>
+            Test surprising animal statements, build streaks, earn XP, and unlock adorable mascot friends.
+            Pick a category, choose your difficulty, and let your seal guide you through one fun fact at a time.
+          </p>
+
+          <div class="grid-2">
+            <div class="card option-group">
+              <h3>Choose a category</h3>
+              <div class="choices" id="categoryChoices"></div>
+            </div>
+
+            <div class="card option-group">
+              <h3>Choose a difficulty</h3>
+              <div class="choices" id="difficultyChoices"></div>
+              <p class="subtle" style="margin-top:10px;">
+                Easy = less XP • Medium = normal XP • Expert = more XP
+              </p>
+            </div>
+          </div>
+
+          <div class="xp-wrap">
+            <div class="xp-label">
+              <span>Unlock progress</span>
+              <span><span id="xpCurrentLabel">0</span> XP</span>
+            </div>
+            <div class="xp-bar">
+              <div class="xp-fill" id="xpFill"></div>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <button class="primary-btn" id="startBtn">Start Challenge</button>
+            <button class="secondary-btn" id="viewCollectionBtn">Animal Collection</button>
+          </div>
+        </div>
+
+        <div class="seal-card">
+          <div class="seal-big" id="homeMascot">🦭</div>
+          <div class="seal-msg" id="homeMascotLabel">Your seal guide is ready!</div>
+          <p class="subtle">Unlock more mascots as you earn XP and equip your favorite animal friend.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="quizScreen" class="screen">
+      <div class="card">
+        <div class="quiz-header">
+          <div class="mini-mascot">
+            <div class="mini-face" id="quizMascot">🦭</div>
+            <span id="quizMascotText">Let’s play!</span>
+          </div>
+          <div class="stats">
+            <div class="pill">Question <span id="questionNumber">1</span>/<span id="questionTotal">10</span></div>
+            <div class="pill">Score: <span id="score">0</span></div>
+            <div class="pill">Streak: <span id="streak">0</span></div>
+            <div class="pill">XP This Round: <span id="roundXP">0</span></div>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-meta">
+            <span id="categoryLabel">Mixed</span> • <span id="difficultyLabel">Medium</span>
+          </div>
+          <div class="statement" id="statementText"></div>
+
+          <div class="answer-row">
+            <button class="answer-btn myth-btn" id="mythBtn">Myth</button>
+            <button class="answer-btn fact-btn" id="factBtn">Fact</button>
+          </div>
+
+          <div class="feedback" id="feedbackBox">
+            <h4 id="feedbackTitle"></h4>
+            <p id="feedbackText"></p>
+          </div>
+
+          <div class="next-row">
+            <button class="primary-btn" id="nextBtn" disabled>Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultsScreen" class="screen">
+      <div class="card">
+        <h2>Round complete 🎉</h2>
+        <p class="subtle">Nice work. Here’s how you did this round.</p>
+
+        <div class="results-grid">
+          <div class="result-box">
+            <div class="big">✅</div>
+            <div><strong id="finalScore">0</strong></div>
+            <div class="subtle">Correct</div>
+          </div>
+          <div class="result-box">
+            <div class="big">🔥</div>
+            <div><strong id="finalBestRoundStreak">0</strong></div>
+            <div class="subtle">Best Round Streak</div>
+          </div>
+          <div class="result-box">
+            <div class="big">⭐</div>
+            <div><strong id="finalXP">0</strong></div>
+            <div class="subtle">XP Earned</div>
+          </div>
+          <div class="result-box">
+            <div class="big">📚</div>
+            <div><strong id="finalCategory">Mixed</strong></div>
+            <div class="subtle">Category</div>
+          </div>
+        </div>
+
+        <div class="xp-wrap">
+          <div class="xp-label">
+            <span>Total XP</span>
+            <span><span id="resultsXPLabel">0</span> XP</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-fill" id="resultsXPFill"></div>
+          </div>
+        </div>
+
+        <div class="cta-row">
+          <button class="primary-btn" id="playAgainBtn">Play Again</button>
+          <button class="secondary-btn" id="resultsCollectionBtn">Animal Collection</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="collectionScreen" class="screen">
+      <div class="card collection">
+        <h2>Your Animal Collection</h2>
+        <p class="subtle">Earn more XP to unlock more mascot friends. Equip one to replace your seal guide.</p>
+        <div class="collection-grid" id="collectionGrid"></div>
+        <div class="cta-row">
+          <button class="secondary-btn" id="backHomeBtn">Back Home</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">Built for GitHub Pages • Progress saves in your browser</div>
+  </div>
+
+  <script>
+    const questionBank = [
+      { category: "Mixed", difficulty: "easy", statement: "Bats are blind.", answer: "myth", explanation: "Myth. Bats can see, and many species also use echolocation to help them navigate." },
+      { category: "Mixed", difficulty: "easy", statement: "Octopuses have three hearts.", answer: "fact", explanation: "Fact. Two hearts move blood to the gills, and one pumps it to the rest of the body." },
+      { category: "Mixed", difficulty: "easy", statement: "Goldfish only remember things for a few seconds.", answer: "myth", explanation: "Myth. Goldfish can remember information for much longer than a few seconds." },
+      { category: "Mixed", difficulty: "medium", statement: "A group of flamingos is called a flamboyance.", answer: "fact", explanation: "Fact. That is one of the real collective nouns used for flamingos." },
+      { category: "Mixed", difficulty: "medium", statement: "Sharks are mammals because they give live birth.", answer: "myth", explanation: "Myth. Sharks are fish, even though some species give live birth." },
+      { category: "Mixed", difficulty: "medium", statement: "Koalas sleep for much of the day.", answer: "fact", explanation: "Fact. Koalas often sleep many hours a day to conserve energy." },
+      { category: "Mixed", difficulty: "expert", statement: "Sea otters hold hands while sleeping so they do not drift apart.", answer: "fact", explanation: "Fact. Sea otters may hold paws or wrap in kelp to stay close while resting." },
+      { category: "Mixed", difficulty: "expert", statement: "All penguins live in icy Antarctica.", answer: "myth", explanation: "Myth. Penguins live in a range of Southern Hemisphere environments, and not all are in Antarctica." },
+      { category: "Ocean", difficulty: "easy", statement: "Dolphins are fish.", answer: "myth", explanation: "Myth. Dolphins are mammals. They breathe air and nurse their young." },
+      { category: "Ocean", difficulty: "easy", statement: "Seahorses can swim upright.", answer: "fact", explanation: "Fact. Seahorses swim vertically, which makes them especially distinctive." },
+      { category: "Ocean", difficulty: "medium", statement: "Jellyfish do not have a brain.", answer: "fact", explanation: "Fact. Jellyfish do not have a central brain, though they do have a simple nerve net." },
+      { category: "Ocean", difficulty: "expert", statement: "Narwhal tusks are actually elongated teeth.", answer: "fact", explanation: "Fact. A narwhal’s tusk is a long tooth that grows outward." },
+      { category: "Forest", difficulty: "easy", statement: "Owls can turn their heads all the way around.", answer: "myth", explanation: "Myth. Owls can turn their heads very far, but not a full 360 degrees." },
+      { category: "Forest", difficulty: "easy", statement: "Beavers build dams.", answer: "fact", explanation: "Fact. Beavers are known for building dams and lodges in waterways." },
+      { category: "Forest", difficulty: "medium", statement: "Porcupines can shoot their quills.", answer: "myth", explanation: "Myth. Porcupines cannot shoot quills, but quills detach easily on contact." },
+      { category: "Forest", difficulty: "expert", statement: "Some frogs can freeze and later thaw out alive.", answer: "fact", explanation: "Fact. Some species, like wood frogs, can survive partial freezing." },
+      { category: "Savannah", difficulty: "easy", statement: "Cheetahs are the fastest land animals.", answer: "fact", explanation: "Fact. Cheetahs are famous for their incredible sprinting speed." },
+      { category: "Savannah", difficulty: "medium", statement: "Elephants are afraid of mice.", answer: "myth", explanation: "Myth. This is a popular story, but it is not a reliable biological rule." },
+      { category: "Savannah", difficulty: "expert", statement: "Giraffes have the same number of neck vertebrae as humans.", answer: "fact", explanation: "Fact. Like humans, giraffes usually have seven neck vertebrae, though theirs are much longer." },
+      { category: "Arctic", difficulty: "easy", statement: "Polar bears have black skin under their fur.", answer: "fact", explanation: "Fact. Their fur looks white, but their skin underneath is black." },
+      { category: "Arctic", difficulty: "medium", statement: "Penguins and polar bears naturally live together in the wild.", answer: "myth", explanation: "Myth. Polar bears live in the Arctic, while penguins live in the Southern Hemisphere." },
+      { category: "Arctic", difficulty: "expert", statement: "Arctic foxes change coat color with the seasons.", answer: "fact", explanation: "Fact. Many arctic foxes have seasonal coats that help with camouflage." }
+    ];
+
+    const encouragementCorrect = [
+      "Seal-iously impressive!",
+      "Nice one!",
+      "You nailed it!",
+      "That was a smart catch!",
+      "You’re on a roll!",
+      "Wildly correct!",
+      "Fur-tastic job!"
+    ];
+
+    const encouragementWrong = [
+      "Good try — now you know!",
+      "No worries, that’s how learning works.",
+      "Nice attempt. Let’s keep going!",
+      "That one tricks lots of people.",
+      "You’re still building momentum!",
+      "Close call — onward!"
+    ];
+
+    const streakMessages = {
+      3: "3 in a row! Your seal is cheering for you! 🦭",
+      5: "5 in a row! You’re swimming through these! 🌊",
+      10: "10 in a row! Legendary animal fact energy! ✨"
+    };
+
+    const animals = [
+      { name: "Seal", emoji: "🦭", unlockXP: 0, blurb: "Your default ocean guide." },
+      { name: "Penguin", emoji: "🐧", unlockXP: 40, blurb: "A cool little waddler." },
+      { name: "Fox", emoji: "🦊", unlockXP: 80, blurb: "Quick, clever, and cozy." },
+      { name: "Otter", emoji: "🦦", unlockXP: 130, blurb: "Playful and full of charm." },
+      { name: "Koala", emoji: "🐨", unlockXP: 190, blurb: "Soft, sleepy, and sweet." },
+      { name: "Tiger", emoji: "🐯", unlockXP: 260, blurb: "Bold stripes, big energy." },
+      { name: "Whale", emoji: "🐋", unlockXP: 340, blurb: "A gentle ocean giant." }
+    ];
+
+    const difficultyXP = {
+      easy: 8,
+      medium: 12,
+      expert: 18
+    };
+
+    const screens = {
+      home: document.getElementById("homeScreen"),
+      quiz: document.getElementById("quizScreen"),
+      results: document.getElementById("resultsScreen"),
+      collection: document.getElementById("collectionScreen")
+    };
+
+    const state = {
+      selectedCategory: "Mixed",
+      selectedDifficulty: "medium",
+      questions: [],
+      currentIndex: 0,
+      score: 0,
+      streak: 0,
+      bestRoundStreak: 0,
+      roundXP: 0,
+      answered: false,
+      totalXP: Number(localStorage.getItem("animalQuiz_totalXP") || 0),
+      bestStreak: Number(localStorage.getItem("animalQuiz_bestStreak") || 0),
+      roundsCompleted: Number(localStorage.getItem("animalQuiz_roundsCompleted") || 0),
+      equippedAnimal: localStorage.getItem("animalQuiz_equippedAnimal") || "Seal",
+      completedCategories: JSON.parse(localStorage.getItem("animalQuiz_completedCategories") || "[]")
+    };
+
+    const categoryOptions = ["Mixed", "Ocean", "Forest", "Savannah", "Arctic"];
+    const difficultyOptions = ["easy", "medium", "expert"];
+
+    function saveProgress() {
+      localStorage.setItem("animalQuiz_totalXP", state.totalXP);
+      localStorage.setItem("animalQuiz_bestStreak", state.bestStreak);
+      localStorage.setItem("animalQuiz_roundsCompleted", state.roundsCompleted);
+      localStorage.setItem("animalQuiz_equippedAnimal", state.equippedAnimal);
+      localStorage.setItem("animalQuiz_completedCategories", JSON.stringify(state.completedCategories));
+    }
+
+    function showScreen(name) {
+      Object.values(screens).forEach(s => s.classList.remove("active"));
+      screens[name].classList.add("active");
+    }
+
+    function getEquippedAnimal() {
+      return animals.find(a => a.name === state.equippedAnimal) || animals[0];
+    }
+
+    function updateMascots() {
+      const equipped = getEquippedAnimal();
+      document.getElementById("topMascot").textContent = equipped.emoji;
+      document.getElementById("homeMascot").textContent = equipped.emoji;
+      document.getElementById("quizMascot").textContent = equipped.emoji;
+      document.getElementById("homeMascotLabel").textContent = `${equipped.name} is ready to play!`;
+    }
+
+    function nextUnlockXP(currentXP) {
+      const locked = animals.filter(a => a.unlockXP > currentXP).sort((a,b) => a.unlockXP - b.unlockXP);
+      return locked[0] || null;
+    }
+
+    function updateTopStats() {
+      document.getElementById("totalXP").textContent = state.totalXP;
+      document.getElementById("bestStreak").textContent = state.bestStreak;
+      document.getElementById("roundsCompleted").textContent = state.roundsCompleted;
+
+      document.getElementById("xpCurrentLabel").textContent = state.totalXP;
+      document.getElementById("resultsXPLabel").textContent = state.totalXP;
+
+      const nextUnlock = nextUnlockXP(state.totalXP);
+      let percent = 100;
+
+      if (nextUnlock) {
+        const prevUnlock = [...animals].filter(a => a.unlockXP <= state.totalXP).sort((a,b) => b.unlockXP - a.unlockXP)[0]?.unlockXP || 0;
+        const range = nextUnlock.unlockXP - prevUnlock;
+        const progress = state.totalXP - prevUnlock;
+        percent = Math.max(0, Math.min(100, (progress / range) * 100));
+      }
+
+      document.getElementById("xpFill").style.width = `${percent}%`;
+      document.getElementById("resultsXPFill").style.width = `${percent}%`;
+    }
+
+    function renderCategoryChoices() {
+      const wrap = document.getElementById("categoryChoices");
+      wrap.innerHTML = "";
+      categoryOptions.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.className = "chip" + (state.selectedCategory === cat ? " active" : "");
+        btn.textContent = cat;
+        btn.onclick = () => {
+          state.selectedCategory = cat;
+          renderCategoryChoices();
+        };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function renderDifficultyChoices() {
+      const wrap = document.getElementById("difficultyChoices");
+      wrap.innerHTML = "";
+      difficultyOptions.forEach(level => {
+        const btn = document.createElement("button");
+        btn.className = "chip" + (state.selectedDifficulty === level ? " active" : "");
+        btn.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+        btn.onclick = () => {
+          state.selectedDifficulty = level;
+          renderDifficultyChoices();
+        };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function buildQuestionSet() {
+      let pool = questionBank.filter(q => {
+        const categoryMatch = state.selectedCategory === "Mixed" ? true : q.category === state.selectedCategory;
+        const difficultyMatch = q.difficulty === state.selectedDifficulty || state.selectedCategory === "Mixed";
+        return categoryMatch && difficultyMatch;
+      });
+
+      if (state.selectedCategory === "Mixed") {
+        pool = questionBank.filter(q => q.difficulty === state.selectedDifficulty || state.selectedDifficulty === "medium");
+      }
+
+      if (pool.length < 10) {
+        pool = questionBank.filter(q => state.selectedCategory === "Mixed" || q.category === state.selectedCategory);
+      }
+
+      state.questions = shuffle(pool).slice(0, 10);
+      state.currentIndex = 0;
+      state.score = 0;
+      state.streak = 0;
+      state.bestRoundStreak = 0;
+      state.roundXP = 0;
+      state.answered = false;
+    }
+
+    function currentQuestion() {
+      return state.questions[state.currentIndex];
+    }
+
+    function getXPForCorrect() {
+      let xp = difficultyXP[state.selectedDifficulty];
+      if (state.streak >= 10) xp = Math.round(xp * 2);
+      else if (state.streak >= 5) xp = Math.round(xp * 1.5);
+      else if (state.streak >= 3) xp = Math.round(xp * 1.2);
+      return xp;
+    }
+
+    function renderQuestion() {
+      const q = currentQuestion();
+      document.getElementById("questionNumber").textContent = state.currentIndex + 1;
+      document.getElementById("questionTotal").textContent = state.questions.length;
+      document.getElementById("score").textContent = state.score;
+      document.getElementById("streak").textContent = state.streak;
+      document.getElementById("roundXP").textContent = state.roundXP;
+      document.getElementById("categoryLabel").textContent = q.category;
+      document.getElementById("difficultyLabel").textContent = q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1);
+      document.getElementById("statementText").textContent = q.statement;
+      document.getElementById("feedbackBox").className = "feedback";
+      document.getElementById("feedbackTitle").textContent = "";
+      document.getElementById("feedbackText").textContent = "";
+      document.getElementById("nextBtn").disabled = true;
+
+      const mythBtn = document.getElementById("mythBtn");
+      const factBtn = document.getElementById("factBtn");
+      mythBtn.disabled = false;
+      factBtn.disabled = false;
+      mythBtn.className = "answer-btn myth-btn";
+      factBtn.className = "answer-btn fact-btn";
+
+      state.answered = false;
+      document.getElementById("quizMascotText").textContent = "What do you think?";
+    }
+
+    function randomFrom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function answerQuestion(choice) {
+      if (state.answered) return;
+      state.answered = true;
+
+      const q = currentQuestion();
+      const isCorrect = choice === q.answer;
+      const mythBtn = document.getElementById("mythBtn");
+      const factBtn = document.getElementById("factBtn");
+      const feedback = document.getElementById("feedbackBox");
+      const title = document.getElementById("feedbackTitle");
+      const text = document.getElementById("feedbackText");
+
+      mythBtn.disabled = true;
+      factBtn.disabled = true;
+
+      if (q.answer === "myth") mythBtn.classList.add("correct");
+      else factBtn.classList.add("correct");
+
+      if (!isCorrect) {
+        if (choice === "myth") mythBtn.classList.add("wrong");
+        if (choice === "fact") factBtn.classList.add("wrong");
+      }
+
+      if (isCorrect) {
+        state.score += 1;
+        state.streak += 1;
+        state.bestRoundStreak = Math.max(state.bestRoundStreak, state.streak);
+        state.bestStreak = Math.max(state.bestStreak, state.streak);
+
+        const xpEarned = getXPForCorrect();
+        state.roundXP += xpEarned;
+
+        feedback.classList.add("show", "correct");
+        title.textContent = `${randomFrom(encouragementCorrect)} +${xpEarned} XP`;
+        let streakText = streakMessages[state.streak] ? ` ${streakMessages[state.streak]}` : "";
+        text.textContent = `${q.explanation}${streakText}`;
+        document.getElementById("quizMascotText").textContent = state.streak >= 3 ? "You’re building a great streak!" : "Nice work!";
+      } else {
+        state.streak = 0;
+        feedback.classList.add("show", "wrong");
+        title.textContent = randomFrom(encouragementWrong);
+        text.textContent = q.explanation;
+        document.getElementById("quizMascotText").textContent = "You’re still learning — keep going!";
+      }
+
+      document.getElementById("score").textContent = state.score;
+      document.getElementById("streak").textContent = state.streak;
+      document.getElementById("roundXP").textContent = state.roundXP;
+      document.getElementById("nextBtn").disabled = false;
+      saveProgress();
+      updateTopStats();
+    }
+
+    function finishRound() {
+      state.totalXP += state.roundXP;
+      state.roundsCompleted += 1;
+      if (!state.completedCategories.includes(state.selectedCategory)) {
+        state.completedCategories.push(state.selectedCategory);
+      }
+      saveProgress();
+      updateTopStats();
+      updateMascots();
+
+      document.getElementById("finalScore").textContent = `${state.score}/${state.questions.length}`;
+      document.getElementById("finalBestRoundStreak").textContent = state.bestRoundStreak;
+      document.getElementById("finalXP").textContent = state.roundXP;
+      document.getElementById("finalCategory").textContent = state.selectedCategory;
+
+      showScreen("results");
+    }
+
+    function nextQuestion() {
+      if (state.currentIndex < state.questions.length - 1) {
+        state.currentIndex += 1;
+        renderQuestion();
+      } else {
+        finishRound();
+      }
+    }
+
+    function renderCollection() {
+      const grid = document.getElementById("collectionGrid");
+      grid.innerHTML = "";
+
+      animals.forEach(animal => {
+        const unlocked = state.totalXP >= animal.unlockXP;
+        const equipped = state.equippedAnimal === animal.name;
+
+        const box = document.createElement("div");
+        box.className = "animal-box" + (!unlocked ? " locked" : "") + (equipped ? " equipped" : "");
+
+        box.innerHTML = `
+          <div class="animal-emoji">${animal.emoji}</div>
+          <h4>${animal.name}</h4>
+          <p class="subtle">${animal.blurb}</p>
+          <p class="subtle">${unlocked ? "Unlocked" : `Unlocks at ${animal.unlockXP} XP`}</p>
+        `;
+
+        const btn = document.createElement("button");
+        if (!unlocked) {
+          btn.textContent = "Locked";
+          btn.disabled = true;
+        } else if (equipped) {
+          btn.textContent = "Equipped";
+          btn.disabled = true;
+        } else {
+          btn.textContent = "Equip";
+          btn.onclick = () => {
+            state.equippedAnimal = animal.name;
+            saveProgress();
+            updateMascots();
+            renderCollection();
+          };
+        }
+
+        box.appendChild(btn);
+        grid.appendChild(box);
+      });
+    }
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      buildQuestionSet();
+      renderQuestion();
+      showScreen("quiz");
+    });
+
+    document.getElementById("viewCollectionBtn").addEventListener("click", () => {
+      renderCollection();
+      showScreen("collection");
+    });
+
+    document.getElementById("resultsCollectionBtn").addEventListener("click", () => {
+      renderCollection();
+      showScreen("collection");
+    });
+
+    document.getElementById("backHomeBtn").addEventListener("click", () => {
+      updateTopStats();
+      updateMascots();
+      showScreen("home");
+    });
+
+    document.getElementById("playAgainBtn").addEventListener("click", () => {
+      updateTopStats();
+      updateMascots();
+      showScreen("home");
+    });
+
+    document.getElementById("mythBtn").addEventListener("click", () => answerQuestion("myth"));
+    document.getElementById("factBtn").addEventListener("click", () => answerQuestion("fact"));
+    document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+
+    renderCategoryChoices();
+    renderDifficultyChoices();
+    updateTopStats();
+    updateMascots();
+    renderCollection();
+  </script>
+</body>
+</html>
