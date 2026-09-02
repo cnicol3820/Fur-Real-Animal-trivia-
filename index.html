@@ -16,6 +16,7 @@
       --accent:#ffd166;
       --good:#75d7a7;
       --bad:#ff9aa2;
+      --lock:#b8c7d3;
       --shadow:0 14px 34px rgba(64,120,160,.16);
       --radius:24px;
     }
@@ -75,15 +76,43 @@
       padding:18px;
       position:relative;
       overflow:hidden;
-      min-height:620px;
+      min-height:640px;
     }
 
     .map-top{
-      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;
+    }
+
+    .swipe-hint{
+      display:none;
+      color:var(--primary-dark);
+      font-weight:800;
+      font-size:.95rem;
+      margin:8px 0 12px;
+    }
+
+    .map-scroll{
+      width:100%;
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding-bottom:8px;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:thin;
+      scrollbar-color:#cfefff transparent;
+    }
+
+    .map-scroll::-webkit-scrollbar{
+      height:10px;
+    }
+
+    .map-scroll::-webkit-scrollbar-thumb{
+      background:#cfefff;
+      border-radius:999px;
     }
 
     .map-stage{
       position:relative;
+      width:1200px;
       height:500px;
       border-radius:24px;
       overflow:hidden;
@@ -109,10 +138,12 @@
       background:transparent;
       cursor:pointer;
       z-index:3;
-      transition:transform .2s ease;
+      transition:transform .2s ease, opacity .2s ease;
     }
     .island-node:hover{transform:translateY(-4px) scale(1.03)}
     .island-node.active .island-label{outline:4px solid var(--accent)}
+    .island-node.locked{opacity:.72}
+    .island-node.locked:hover{transform:none}
 
     .island-label{
       position:absolute;
@@ -120,7 +151,7 @@
       top:50%;
       transform:translate(-50%,-50%);
       width:110px;
-      min-height:72px;
+      min-height:78px;
       border-radius:22px;
       background:rgba(255,255,255,.88);
       box-shadow:var(--shadow);
@@ -131,10 +162,12 @@
       padding:8px;
       font-weight:900;
       color:#17384c;
+      text-align:center;
     }
 
     .island-label .emoji{font-size:1.8rem;line-height:1}
     .island-label .small{font-size:.78rem;font-weight:700;color:#31576f}
+    .island-label .lockline{font-size:.72rem;color:#7a8f9f;margin-top:2px}
 
     .map-mascot{
       position:absolute;
@@ -184,6 +217,11 @@
     .secondary-btn{
       background:#fff;color:var(--text);padding:14px 22px;border-radius:16px;font-weight:800;
     }
+    .primary-btn:disabled,.secondary-btn:disabled,.answer-btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+      transform:none;
+    }
 
     .xp-wrap{margin-top:18px}
     .xp-label{
@@ -211,6 +249,11 @@
       border:2px dashed rgba(255,255,255,.7);
     }
     .world-preview .big{font-size:4rem}
+    .preview-lock{
+      margin-top:8px;
+      font-weight:800;
+      color:#7a8f9f;
+    }
 
     .subtle{color:var(--muted)}
 
@@ -288,9 +331,8 @@
       .answer-grid{grid-template-columns:1fr}
       .statement{font-size:1.2rem}
       .brand h1{font-size:1.5rem}
-      .map-stage{height:620px}
-      .island-node{width:120px;height:120px}
-      .island-label{width:100px}
+      .map-shell{min-height:auto}
+      .swipe-hint{display:block}
     }
   </style>
 </head>
@@ -319,89 +361,99 @@
         <div class="map-shell">
           <div class="map-top">
             <div class="pill">Selected: <span id="selectedWorldLabel">Mixed</span></div>
+            <div class="pill">World XP gates enabled</div>
           </div>
 
-          <div class="map-stage">
-            <svg viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M100 360 C220 300, 260 170, 420 190 S650 330, 780 220 S980 120, 1100 170"
-                fill="none" stroke="#bfe8f7" stroke-width="18" stroke-linecap="round" stroke-dasharray="12 16"/>
+          <div class="swipe-hint">Swipe to explore more islands →</div>
 
-              <ellipse cx="120" cy="360" rx="90" ry="58" fill="#eadcff"/>
-              <ellipse cx="120" cy="360" rx="68" ry="42" fill="#f6ecff"/>
+          <div class="map-scroll" id="mapScroll">
+            <div class="map-stage">
+              <svg viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M100 360 C220 300, 260 170, 420 190 S650 330, 780 220 S980 120, 1100 170"
+                  fill="none" stroke="#bfe8f7" stroke-width="18" stroke-linecap="round" stroke-dasharray="12 16"/>
 
-              <ellipse cx="320" cy="170" rx="95" ry="60" fill="#bdefff"/>
-              <ellipse cx="320" cy="170" rx="72" ry="44" fill="#def8ff"/>
+                <ellipse cx="120" cy="360" rx="90" ry="58" fill="#eadcff"/>
+                <ellipse cx="120" cy="360" rx="68" ry="42" fill="#f6ecff"/>
 
-              <ellipse cx="540" cy="220" rx="95" ry="60" fill="#d9f4d0"/>
-              <ellipse cx="540" cy="220" rx="72" ry="44" fill="#efffe8"/>
+                <ellipse cx="320" cy="170" rx="95" ry="60" fill="#bdefff"/>
+                <ellipse cx="320" cy="170" rx="72" ry="44" fill="#def8ff"/>
 
-              <ellipse cx="790" cy="130" rx="100" ry="62" fill="#ffe3a8"/>
-              <ellipse cx="790" cy="130" rx="76" ry="46" fill="#fff4d2"/>
+                <ellipse cx="540" cy="220" rx="95" ry="60" fill="#d9f4d0"/>
+                <ellipse cx="540" cy="220" rx="72" ry="44" fill="#efffe8"/>
 
-              <ellipse cx="1080" cy="180" rx="94" ry="58" fill="#eefaff"/>
-              <ellipse cx="1080" cy="180" rx="72" ry="44" fill="#ffffff"/>
+                <ellipse cx="790" cy="130" rx="100" ry="62" fill="#ffe3a8"/>
+                <ellipse cx="790" cy="130" rx="76" ry="46" fill="#fff4d2"/>
 
-              <circle cx="305" cy="145" r="10" fill="#74c7ec"/>
-              <circle cx="335" cy="188" r="8" fill="#74c7ec"/>
+                <ellipse cx="1080" cy="180" rx="94" ry="58" fill="#eefaff"/>
+                <ellipse cx="1080" cy="180" rx="72" ry="44" fill="#ffffff"/>
 
-              <rect x="515" y="175" width="12" height="28" rx="6" fill="#8bbf6a"/>
-              <circle cx="521" cy="168" r="18" fill="#9fd47f"/>
-              <rect x="550" y="190" width="12" height="26" rx="6" fill="#8bbf6a"/>
-              <circle cx="556" cy="183" r="16" fill="#9fd47f"/>
+                <circle cx="305" cy="145" r="10" fill="#74c7ec"/>
+                <circle cx="335" cy="188" r="8" fill="#74c7ec"/>
 
-              <rect x="780" y="95" width="8" height="36" rx="4" fill="#c69a53"/>
-              <ellipse cx="784" cy="87" rx="22" ry="12" fill="#e6bb6e"/>
+                <rect x="515" y="175" width="12" height="28" rx="6" fill="#8bbf6a"/>
+                <circle cx="521" cy="168" r="18" fill="#9fd47f"/>
+                <rect x="550" y="190" width="12" height="26" rx="6" fill="#8bbf6a"/>
+                <circle cx="556" cy="183" r="16" fill="#9fd47f"/>
 
-              <polygon points="1065,155 1080,120 1095,155" fill="#cfe9f7"/>
-              <polygon points="1040,172 1055,140 1070,172" fill="#dff4ff"/>
-            </svg>
+                <rect x="780" y="95" width="8" height="36" rx="4" fill="#c69a53"/>
+                <ellipse cx="784" cy="87" rx="22" ry="12" fill="#e6bb6e"/>
 
-            <div class="bubble b1"></div>
-            <div class="bubble b2"></div>
-            <div class="bubble b3"></div>
-            <div class="bubble b4"></div>
+                <polygon points="1065,155 1080,120 1095,155" fill="#cfe9f7"/>
+                <polygon points="1040,172 1055,140 1070,172" fill="#dff4ff"/>
+              </svg>
 
-            <div class="map-mascot" id="mapMascot">🦭</div>
+              <div class="bubble b1"></div>
+              <div class="bubble b2"></div>
+              <div class="bubble b3"></div>
+              <div class="bubble b4"></div>
 
-            <button class="island-node active" data-category="Mixed" style="left:65px; top:295px;">
-              <div class="island-label">
-                <div class="emoji">🌈</div>
-                Mixed
-                <div class="small">All habitats</div>
-              </div>
-            </button>
+              <div class="map-mascot" id="mapMascot">🦭</div>
 
-            <button class="island-node" data-category="Ocean" style="left:265px; top:105px;">
-              <div class="island-label">
-                <div class="emoji">🌊</div>
-                Ocean
-                <div class="small">Swim and splash</div>
-              </div>
-            </button>
+              <button class="island-node active" data-category="Mixed" style="left:65px; top:295px;">
+                <div class="island-label">
+                  <div class="emoji">🌈</div>
+                  Mixed
+                  <div class="small">All habitats</div>
+                  <div class="lockline">Open</div>
+                </div>
+              </button>
 
-            <button class="island-node" data-category="Forest" style="left:485px; top:155px;">
-              <div class="island-label">
-                <div class="emoji">🌲</div>
-                Forest
-                <div class="small">Cozy woods</div>
-              </div>
-            </button>
+              <button class="island-node" data-category="Ocean" style="left:265px; top:105px;">
+                <div class="island-label">
+                  <div class="emoji">🌊</div>
+                  Ocean
+                  <div class="small">Swim and splash</div>
+                  <div class="lockline" data-lock-text="Ocean"></div>
+                </div>
+              </button>
 
-            <button class="island-node" data-category="Savannah" style="left:735px; top:65px;">
-              <div class="island-label">
-                <div class="emoji">🦒</div>
-                Savannah
-                <div class="small">Sunny plains</div>
-              </div>
-            </button>
+              <button class="island-node" data-category="Forest" style="left:485px; top:155px;">
+                <div class="island-label">
+                  <div class="emoji">🌲</div>
+                  Forest
+                  <div class="small">Cozy woods</div>
+                  <div class="lockline" data-lock-text="Forest"></div>
+                </div>
+              </button>
 
-            <button class="island-node" data-category="Arctic" style="left:1020px; top:115px;">
-              <div class="island-label">
-                <div class="emoji">❄️</div>
-                Arctic
-                <div class="small">Icy facts</div>
-              </div>
-            </button>
+              <button class="island-node" data-category="Savannah" style="left:735px; top:65px;">
+                <div class="island-label">
+                  <div class="emoji">🦒</div>
+                  Savannah
+                  <div class="small">Sunny plains</div>
+                  <div class="lockline" data-lock-text="Savannah"></div>
+                </div>
+              </button>
+
+              <button class="island-node" data-category="Arctic" style="left:1020px; top:115px;">
+                <div class="island-label">
+                  <div class="emoji">❄️</div>
+                  Arctic
+                  <div class="small">Icy facts</div>
+                  <div class="lockline" data-lock-text="Arctic"></div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -431,6 +483,7 @@
               <div class="big" id="worldEmoji">🌈</div>
               <h4 id="worldTitle">Mixed Animal World</h4>
               <p class="subtle" id="worldText">A playful mix of habitats and surprising facts.</p>
+              <div class="preview-lock" id="previewLockText"></div>
             </div>
           </div>
         </div>
@@ -559,11 +612,11 @@
     ];
 
     const worldData = {
-      Mixed:   { emoji:"🌈", title:"Mixed Animal World", text:"A playful mix of habitats and surprising facts.", preview:"linear-gradient(180deg,#f1e4ff,#fff6ff)", x:70, y:320 },
-      Ocean:   { emoji:"🌊", title:"Ocean World", text:"Swim through sea myths and splashy surprises.", preview:"linear-gradient(180deg,#c8f1ff,#e8fbff)", x:270, y:130 },
-      Forest:  { emoji:"🌲", title:"Forest World", text:"Wander through cozy woods full of curious creatures.", preview:"linear-gradient(180deg,#dff7d9,#f2fff0)", x:495, y:180 },
-      Savannah:{ emoji:"🦒", title:"Savannah World", text:"Explore sunny grasslands and speedy animal facts.", preview:"linear-gradient(180deg,#ffe9b8,#fff7df)", x:745, y:90 },
-      Arctic:  { emoji:"❄️", title:"Arctic World", text:"Visit icy habitats and chilly myth-busting rounds.", preview:"linear-gradient(180deg,#eefaff,#ffffff)", x:1015, y:135 }
+      Mixed:   { emoji:"🌈", title:"Mixed Animal World", text:"A playful mix of habitats and surprising facts.", preview:"linear-gradient(180deg,#f1e4ff,#fff6ff)", x:70, y:320, unlockXP:0 },
+      Ocean:   { emoji:"🌊", title:"Ocean World", text:"Swim through sea myths and splashy surprises.", preview:"linear-gradient(180deg,#c8f1ff,#e8fbff)", x:270, y:130, unlockXP:0 },
+      Forest:  { emoji:"🌲", title:"Forest World", text:"Wander through cozy woods full of curious creatures.", preview:"linear-gradient(180deg,#dff7d9,#f2fff0)", x:495, y:180, unlockXP:60 },
+      Savannah:{ emoji:"🦒", title:"Savannah World", text:"Explore sunny grasslands and speedy animal facts.", preview:"linear-gradient(180deg,#ffe9b8,#fff7df)", x:745, y:90, unlockXP:140 },
+      Arctic:  { emoji:"❄️", title:"Arctic World", text:"Visit icy habitats and chilly myth-busting rounds.", preview:"linear-gradient(180deg,#eefaff,#ffffff)", x:1015, y:135, unlockXP:240 }
     };
 
     const animals = [
@@ -647,6 +700,10 @@
       document.getElementById("quizMascot").textContent = a.emoji;
     }
 
+    function isWorldUnlocked(category){
+      return state.totalXP >= worldData[category].unlockXP;
+    }
+
     function moveMascotToCategory(category){
       const mascot = document.getElementById("mapMascot");
       const world = worldData[category];
@@ -654,19 +711,55 @@
       mascot.style.top = world.y + "px";
     }
 
+    function scrollSelectedWorldIntoView(category){
+      const node = document.querySelector(`.island-node[data-category="${category}"]`);
+      if(node){
+        node.scrollIntoView({
+          behavior: "smooth",
+          inline: "center",
+          block: "nearest"
+        });
+      }
+    }
+
+    function refreshWorldLocks(){
+      document.querySelectorAll(".island-node").forEach(node=>{
+        const category = node.dataset.category;
+        const unlocked = isWorldUnlocked(category);
+        node.classList.toggle("locked", !unlocked);
+
+        const lockLine = node.querySelector(".lockline");
+        if(lockLine){
+          lockLine.textContent = unlocked ? "Open" : `${worldData[category].unlockXP} XP`;
+        }
+      });
+    }
+
     function updateWorldPreview(){
+      if(!isWorldUnlocked(state.selectedCategory)){
+        state.selectedCategory = "Mixed";
+      }
+
       const world = worldData[state.selectedCategory];
+      const unlocked = isWorldUnlocked(state.selectedCategory);
+
       document.getElementById("selectedWorldLabel").textContent = state.selectedCategory;
       document.getElementById("worldEmoji").textContent = world.emoji;
       document.getElementById("worldTitle").textContent = world.title;
       document.getElementById("worldText").textContent = world.text;
       document.getElementById("worldPreview").style.background = world.preview;
+      document.getElementById("previewLockText").textContent = unlocked
+        ? "Ready to play"
+        : `Unlocks at ${world.unlockXP} XP`;
 
       document.querySelectorAll(".island-node").forEach(node=>{
         node.classList.toggle("active", node.dataset.category === state.selectedCategory);
       });
 
+      refreshWorldLocks();
       moveMascotToCategory(state.selectedCategory);
+      scrollSelectedWorldIntoView(state.selectedCategory);
+      document.getElementById("startBtn").disabled = !unlocked;
     }
 
     function nextUnlockXP(currentXP){
@@ -690,6 +783,7 @@
       percent = Math.max(0, Math.min(100, percent));
       document.getElementById("xpFill").style.width = percent + "%";
       document.getElementById("resultsXPFill").style.width = percent + "%";
+      refreshWorldLocks();
     }
 
     function renderDifficultyChoices(){
@@ -848,6 +942,7 @@
       saveProgress();
       updateXPBars();
       updateMascots();
+      updateWorldPreview();
 
       document.getElementById("finalScore").textContent = `${state.score}/${state.questions.length}`;
       document.getElementById("finalBestRoundStreak").textContent = state.bestRoundStreak;
@@ -903,12 +998,20 @@
 
     document.querySelectorAll(".island-node").forEach(node=>{
       node.addEventListener("click", ()=>{
-        state.selectedCategory = node.dataset.category;
+        const category = node.dataset.category;
+        if(!isWorldUnlocked(category)){
+          const needed = worldData[category].unlockXP;
+          document.getElementById("previewLockText").textContent = `Locked — reach ${needed} XP to unlock`;
+          scrollSelectedWorldIntoView(category);
+          return;
+        }
+        state.selectedCategory = category;
         updateWorldPreview();
       });
     });
 
     document.getElementById("startBtn").addEventListener("click", ()=>{
+      if(!isWorldUnlocked(state.selectedCategory)) return;
       buildQuestionSet();
       renderQuestion();
       showScreen("quiz");
@@ -925,10 +1028,12 @@
     });
 
     document.getElementById("backHomeBtn").addEventListener("click", ()=>{
+      updateWorldPreview();
       showScreen("home");
     });
 
     document.getElementById("playAgainBtn").addEventListener("click", ()=>{
+      updateWorldPreview();
       showScreen("home");
     });
 
@@ -937,9 +1042,9 @@
     document.getElementById("nextBtn").addEventListener("click", nextQuestion);
 
     renderDifficultyChoices();
-    updateWorldPreview();
     updateMascots();
     updateXPBars();
+    updateWorldPreview();
     renderCollection();
   </script>
 </body>
